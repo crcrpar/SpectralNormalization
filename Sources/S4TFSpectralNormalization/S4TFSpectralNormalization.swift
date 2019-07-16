@@ -21,12 +21,22 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
 
 
     // Spectral Normalization parameters
-    @noDerivative public let nPowerIteration: Int
-    @noDerivative public let eps: Scalar
+    // TODO (crcpar): Support nPowerIteration > 1.
+    @noDerivative public var nPowerIteration_: Int
+    // TODO (crcpar): Make `eps` a `Scalar` after `TF-625`
+    @noDerivative public var eps_: Tensor<Scalar>
     @noDerivative public var u: Parameter<Scalar>
     @noDerivative public var v: Parameter<Scalar>
 
+    var eps: Tensor<Scalar> {
+        set { eps_ = newValue }
+        get { return eps_ }
+    }
 
+
+    // TODO (crcpar): Implement `init` that takes `nPowerIteration` & `eps` as its arguments
+    // The base initializer
+    // This initializer currently does not support `nPowerIteration` and `eps`
     // Copy of https://github.com/tensorflow/swift-apis/blob/master/Sources/TensorFlow/Layers/Convolutional.swift#L128
     public init(
         filter: Tensor<Scalar>,
@@ -44,7 +54,7 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
         self.dilations = dilations
 
         self.nPowerIteration = 1
-        self.eps = 1e-12
+        self.eps_ = Tensor<Scalar>(1e-12)
         self.u = Parameter(Tensor<Scalar>(randomNormal: [filter.shape[3], 1]))
         self.v = Parameter(Tensor<Scalar>(randomNormal: [1, filter.shape[0..<3].contiguousSize]))
     }
@@ -54,9 +64,9 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
     }
 
     func updateApproxVectors(_ nPowerIteration: Int, _ weightMatrix: Tensor<Scalar>) {
-        for _ in 0..<nPowerIteration {
-            v.value = normalize(u.value.transposed() • weightMatrix, eps)
-            u.value = normalize(weightMatrix • v.value.transposed(), eps)
+        for _ in 0..<nPowerIteration_ {
+            v.value = normalize(u.value.transposed() • weightMatrix, eps_)
+            u.value = normalize(weightMatrix • v.value.transposed(), eps_)
         }
     }
 
