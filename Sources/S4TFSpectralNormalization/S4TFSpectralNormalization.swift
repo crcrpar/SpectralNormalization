@@ -3,12 +3,6 @@ import Foundation
 import TensorFlow
 
 
-// TODO (crcrpar): Remove this after support nPowerIteration > 1.
-enum SNConv2DError: Error {
-    case invalidNPowerIteration(nPowerIteration: Int)
-}
-
-
 /// Spectrally Normalized 2-D Convolution Layer.
 ///
 /// This layer creates a convolution filter that is convolved with the layer input to produce
@@ -78,8 +72,6 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
         dilations: (Int, Int) = (1, 1),
         nPowerIteration: Int = 1,
         eps: Scalar = 1e-12) {
-        // TODO (crcrpar): Remove this line after nPowerIteration > 1 support.
-        guard nPowerIteration == 1 else { throw SNConv2DError.invalidNPowerIteration(nPowerIteration: 1) }
 
         self.filter = filter
         self.bias = bias
