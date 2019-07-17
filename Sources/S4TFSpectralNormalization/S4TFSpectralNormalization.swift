@@ -95,7 +95,7 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
     }
 
     /// Normalizes input vector with its L2 norm.
-    func normalize(_ x: Tensor<Scalar>, _ eps: Scalar) -> Tensor<Scalar> {
+    func normalize(_ x: Tensor<Scalar>, _ eps: Tensor<Scalar>) -> Tensor<Scalar> {
         return x / (sqrt(x.squared().sum()) + eps)
     }
 
