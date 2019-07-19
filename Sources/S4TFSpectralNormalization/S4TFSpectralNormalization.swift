@@ -82,8 +82,8 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
 
         self.nPowerIteration = nPowerIteration
         self.eps = Tensor<Scalar>(eps)
-        self.u = Parameter(Tensor<Scalar>(randomNormal: [filter.shape[3], 1]))
-        self.v = Parameter(Tensor<Scalar>(randomNormal: [1, filter.shape[0..<3].contiguousSize]))
+        self.u = Parameter(normalize(Tensor<Scalar>(randomNormal: [filter.shape[1]]), eps))
+        self.v = Parameter(Tensor<Scalar>(zeros: [1, filter.shape[0..<3].contiguousSize]))
     }
 
     /// Normalizes input vector with its L2 norm.
