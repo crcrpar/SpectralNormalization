@@ -1,4 +1,4 @@
 # Spectral Normalization in Swift for TensorFlow
 
 ## Environment
-- [Dockerfile](https://cloud.docker.com/u/crcrpar/repository/docker/crcrpar/swift-jupyter) build from [google/swift-jupyter](https://github.com/google/swift-jupyter) on 2019/07/14.
+I have developed this on `wift-tensorflow-DEVELOPMENT-2019-06-17-a.xctoolchain`.

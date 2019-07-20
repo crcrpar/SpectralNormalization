@@ -4,15 +4,9 @@ import TensorFlow
 @testable import S4TFSpectralNormalization
 
 
+// Constants used in assertion.
 let zero = Tensor<Float>(0)
 let eps = Tensor<Float>(1e-12)
-
-
-func prepareParams<Scalar: TensorFlowFloatingPoint>(_ weightShape: [Int], _ biasShape: [Int]) -> (Tensor<Scalar>, Tensor<Scalar>) {
-    let weight = Tensor<Scalar>(randomNormal: TensorShape(weightShape))
-    let bias = Tensor<Scalar>(randomNormal: TensorShape(biasShape))
-    return (weight, bias)
-}
 
 
 final class SpectralNormalizationTests: XCTestCase {
