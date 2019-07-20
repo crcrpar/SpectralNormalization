@@ -71,6 +71,8 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
         nPowerIteration: Int = 1,
         eps: Scalar = 1e-12) {
 
+        assert(nPowerIteration == 1, "Currently `nPowerIteration` > 1 is not supported.")
+
         self.filter = filter
         self.bias = bias
         self.activation = activation

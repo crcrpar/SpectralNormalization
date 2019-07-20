@@ -44,6 +44,7 @@ public struct SNDense<Scalar: TensorFlowFloatingPoint>: Layer {
         nPowerIteration: Int = 1,
         eps: Scalar = 1e-12
     ) {
+        assert(nPowerIteration == 1, "Currently `nPowerIteration` > 1 is not supported.")
         precondition(weight.rank == 2, "The rank of the 'weight' tensor must be 2 for SNDense.")
         precondition(bias.rank == 1, "The rank of the 'bias' tensor must be 1 for SNDense.")
         self.weight = weight
