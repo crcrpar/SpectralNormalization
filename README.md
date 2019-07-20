@@ -1,3 +1,4 @@
-# SpectralNormalization
+# Spectral Normalization in Swift for TensorFlow
 
-A description of this package.
+## Environment
+I have developed this on `wift-tensorflow-DEVELOPMENT-2019-06-17-a.xctoolchain`.

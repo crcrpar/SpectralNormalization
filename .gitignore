@@ -2,3 +2,17 @@
 /.build
 /Packages
 /*.xcodeproj
+
+.build
+/.previous-build
+xcuserdata
+.DS_Store
+*~
+\#*
+.\#*
+*.xcscmblueprint
+/default.profraw
+*.xcodeproj
+Utilities/Docker/*.tar.gz
+.swiftpm
+Package.resolved
