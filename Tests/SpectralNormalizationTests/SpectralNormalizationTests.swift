@@ -1,7 +1,7 @@
 import XCTest
 
 import TensorFlow
-@testable import S4TFSpectralNormalization
+@testable import SpectralNormalization
 
 
 // Constants used in assertion.
