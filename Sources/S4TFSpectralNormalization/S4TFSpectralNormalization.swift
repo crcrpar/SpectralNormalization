@@ -1,5 +1,3 @@
-import Foundation
-
 import TensorFlow
 
 
@@ -82,14 +80,14 @@ public struct SNConv2D<Scalar: TensorFlowFloatingPoint>: Layer {
 
         self.nPowerIteration = nPowerIteration
         self.eps = Tensor<Scalar>(eps)
-        self.u = Parameter(normalize(Tensor<Scalar>(randomNormal: [filter.shape[1]]), eps))
+        self.u = Parameter(Tensor<Scalar>(randomNormal: [filter.shape[3], 1]))
         self.v = Parameter(Tensor<Scalar>(zeros: [1, filter.shape[0..<3].contiguousSize]))
     }
 
     /// Normalizes input vector with its L2 norm.
-    func normalize(_ x: Tensor<Scalar>, _ eps: Tensor<Scalar>) -> Tensor<Scalar> {
-        return x / (sqrt(x.squared().sum()) + eps)
-    }
+     func normalize(_ x: Tensor<Scalar>, _ eps: Tensor<Scalar>) -> Tensor<Scalar> {
+         return x / (sqrt(x.squared().sum()) + eps)
+     }
 
     /// Updates the approximate singular vectors with the current weight (= `filter`).
     ///

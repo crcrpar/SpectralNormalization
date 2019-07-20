@@ -1,7 +1,9 @@
 import TensorFlow
 
+//import Utils
 
-public struct SNLinear<Scalar: TensorFlowFloatingPoint>: Layer {
+
+public struct SNDense<Scalar: TensorFlowFloatingPoint>: Layer {
 
     public typealias Input = Tensor<Scalar>
     public typealias Output = Tensor<Scalar>
@@ -22,7 +24,7 @@ public struct SNLinear<Scalar: TensorFlowFloatingPoint>: Layer {
     public init(
         weight: Tensor<Scalar>,
         bias: Tensor<Scalar>,
-        activation: @escaping Activation,
+        activation: @escaping Activation = identity,
         nPowerIteration: Int = 1,
         eps: Scalar = 1e-12
     ) {
@@ -36,8 +38,8 @@ public struct SNLinear<Scalar: TensorFlowFloatingPoint>: Layer {
         self.nPowerIteration = nPowerIteration
         self.eps = Tensor<Scalar>(eps)
         let weightShape = weight.shape
-        self.u = Parameter(normalize(Tensor<Scalar>(randomNormal: [filter.shape[1]]), eps))
-        self.v = Parameter(Tensor<Scalar>(zeros: [filter.shape[0]]))
+        self.u = Parameter(Tensor<Scalar>(randomNormal: [weightShape[1], 1]))
+        self.v = Parameter(Tensor<Scalar>(zeros: [1, weightShape[0]]))
     }
 
     /// Normalizes input vector with its L2 norm.
@@ -75,11 +77,25 @@ public struct SNLinear<Scalar: TensorFlowFloatingPoint>: Layer {
             weight / calcMaxSingularValue(weightMatrix, u, v)) + bias)
     }
 
-    @differentiable
-    public func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
-        swift Context.local.learningPhase {
+    @differentiable(vjp: _vjpApplied(to:))
+    public func callAsFunction(_ input: Input) -> Output {
+        switch Context.local.learningPhase {
             case .training: return applyingTraining(to: input)
             case .inference: return applyingInference(to: input)
+        }
+    }
+    
+    @usableFromInline
+    func _vjpApplied(to input: Tensor<Scalar>) -> (Tensor<Scalar>, (Tensor<Scalar>) -> (SNDense<Scalar>.TangentVector, Tensor<Scalar>)) {
+        switch Context.local.learningPhase {
+        case .training:
+            return valueWithPullback(at: input) {
+                $0.applyingTraining(to: $1)
+            }
+        case .inference:
+            return valueWithPullback(at: input) {
+                $0.applyingInference(to: $1)
+            }
         }
     }
 }
